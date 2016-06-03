@@ -1,39 +1,39 @@
-
-getMessage = function (a, b) {
-  if (typeof a === 'boolean') {
-    if (a === true) {
-      mes="Я попал в " + b.toString();
-    }
-    if (a === false) {
-      mes="Я никуда не попал";
-    }
-  }
-  if (typeof a === 'number') {
-    mes="Я прыгнул на " + (a*100).toString() + " сантиметров";
-  }
-  if (typeof a === 'object' && a.constructor === Array) {
-    var sum = 0;
-    var lengtha = a.length;
-    var i;
-    for (i=0; i<=lengtha-1; i++) {
-      sum = sum + a[i];
-    }
-      mes="Я прошёл " + (sum).toString() + " шагов";
-
-  }
-  if ((typeof a == 'object' && a.constructor === Array) & (typeof b == 'object'  && b.constructor === Array)) {
-    var lengthmin=0;
-    if(a.length <= b.length)
-      lengthmin=a.length;
-    else
-      lengthmin=b.length;
-      var sum1=0;
-      var i1;
-      for (i1=0; i1<=lengthmin-1; i1++) {
-        sum1 = sum1 + a[i1]*b[i1];
+function getMessage(a, b) {
+    var mes;
+      if (typeof a === 'boolean') {
+        if (a) {
+          mes = "Я попал в " + b;
+         }
+        else {
+          mes = "Я никуда не попал";
+         }
       }
-        mes="Я прошёл " + (sum1).toString() + " метров";
 
+       else {
+         if (typeof a === 'number') {
+         mes = "Я прыгнул на " + (a * 100) + " сантиметров";
+         }
+         else {
+           if (Array.isArray(a) && Array.isArray(b)) {
+             var lengthmin=0;
+             a.forEach(function(item, i){
+              lengthmin += item * b[i];
+             return lengthmin;
+          });
+
+          mes="Я прошёл " + lengthmin + " метров";
+
+        } else {
+            if (Array.isArray(a)) {
+              var sum = a.reduce(function(c, d) {
+              return c + d;
+              });
+
+                mes = "Я прошёл " + sum + " шагов";
+
+            }
+        }
+    }
   }
-    return mes;
-};
+    return mes;  
+}
