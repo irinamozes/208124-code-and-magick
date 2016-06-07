@@ -382,18 +382,80 @@
      * Отрисовка экрана паузы.
      */
     _drawPauseScreen: function() {
+      var context = this.ctx;
+      var text;
+      var x = 20;
+
+      /** Отрисовка поля канваса */
+
+      context.fillStyle = '#FFFFFF';
+      context.fillRect = (20, 20, WIDTH, HEIGHT);
+      context.shadowColor = 'rgba(0, 0, 0, 0.7)';
+      context.shadowOffsetX = 10;
+      context.shadowOffsetY = 10;
+
+
+      context.font ='16px PT Mono';
+      context.textBaseline ='hanging';
+      context.fillStyle = 'black';
+
+   /**Функция splitTextMin разбиения текста на подстроки.
+   * Параметры:
+   * context - объект канваса, определенный ранее.
+   * text- передаваемый текст.
+   * x- отступ в поле канваса слева и справа.
+   * maxWidth- ширина поля канваса вместе с отступами.
+   */
+      function splitTextMin(context,text, x, maxWidth)
+         {
+             var h= 24; // высота строк и отступ сверху.
+             var widthMin = maxWidth - 2*x; // ширина, которая должна быть у выводимых строк.
+             var lines = []; // массив, в который заносятся строки нужной ширины.
+             var words = text.split(" "); // массив разбиения текста на слова.
+             var countWords = words.length;
+             var line = '';  //переменная, в к-ю заносятся строки нужной ширины, которая затем добавляется к массиву lines.
+             for (var n = 0; n < countWords; n++) {
+                 var testLine = line + words[n] + " ";
+                 var testWidth = context.measureText(testLine).width;
+                 if (testWidth > widthMin) {
+                     lines[lines.length] = line; // занесение строки в массив lines.
+                     line = words[n] + ' '; // занесение в line последнего слова, которое не влезло в формируемую строку.
+                 }
+                 else {
+                     line = testLine; // если ширина формируемой строки меньше или равна нужной ширине.
+                 }
+             }
+             lines[lines.length] = line; // занесение последней строки из текста в массив lines.
+
+
+         /** Вывод строк в поле канваса из массива lines.*/
+             var len = lines.length;
+             for (var i = 0; i < len; i++) {
+               context.fillText(lines[i], x, h+i*h);
+             }
+         }
+
+
       switch (this.state.currentStatus) {
         case Verdict.WIN:
-          console.log('you have won!');
+          text = 'Вы победили! Нажмите Space для продолжения игры.';
+          splitTextMin(context,text, x, WIDTH);
+  /**         console.log('you have won!');*/
           break;
         case Verdict.FAIL:
-          console.log('you have failed!');
+  /**         console.log('you have failed!');*/
+          text = 'Вы проиграли! Нажмите Space для продолжения игры.';
+          splitTextMin(context,text, x, WIDTH);
           break;
         case Verdict.PAUSE:
-          console.log('game is on pause!');
+  /**        console.log('game is on pause!');    */
+          text = 'Пауза в игре! Нажмите Space для продолжения игры.';
+          splitTextMin(context,text, x, WIDTH);
           break;
         case Verdict.INTRO:
-          console.log('welcome to the game! Press Space to start');
+    /**      console.log('welcome to the game! Press Space to start');*/
+          text = 'Добро пожаловать в игру! Вас ждут удивительные приключения с могущественным магом Пендальфом Синим, который может летать вверх, ходить налево и направо, стрелять файрболом и ваообще радоваться жизни. Нажмите Space для продолжения игры.';
+          splitTextMin(context,text, x, WIDTH);
           break;
       }
     },
