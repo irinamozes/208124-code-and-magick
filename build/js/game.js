@@ -355,7 +355,11 @@
       window.addEventListener('keydown', this._pauseListener);
 
       this._drawPauseScreen();
+
+      this._drawPauseScreen();
     },
+
+
 
     /**
      * Обработчик событий клавиатуры во время паузы.
