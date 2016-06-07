@@ -58,6 +58,6 @@ function splitText(text, x, h, maxWidth)
 
 /** Вывод строк в поле канваса из массива lines.*/
     var len = lines.length;
-    for (var i = 0; i < len; n++) {
+    for (var i = 0; i < len; i++) {
       ctx.fillText(lines[i], x, h+i*h);
     }
