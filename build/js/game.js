@@ -387,12 +387,13 @@
       var x = 20;
 
       /** Отрисовка поля канваса */
-
+      context.rect(20, 20, 500, 200);
       context.fillStyle = '#FFFFFF';
-      context.fillRect = (20, 20, WIDTH, HEIGHT);
-      context.shadowColor = 'rgba(0, 0, 0, 0.7)';
+      context.fillRect = (20, 20, 500, 200);
+  /**       context.shadowColor = 'rgba(0, 0, 0, 0.7)';
       context.shadowOffsetX = 10;
-      context.shadowOffsetY = 10;
+      context.shadowOffsetY = 10;*/
+      context.fill();
 
 
       context.font ='16px PT Mono';
@@ -439,23 +440,23 @@
       switch (this.state.currentStatus) {
         case Verdict.WIN:
           text = 'Вы победили! Нажмите Space для продолжения игры.';
-          splitTextMin(context,text, x, WIDTH);
+          splitTextMin(context,text, x, 500);
   /**         console.log('you have won!');*/
           break;
         case Verdict.FAIL:
   /**         console.log('you have failed!');*/
           text = 'Вы проиграли! Нажмите Space для продолжения игры.';
-          splitTextMin(context,text, x, WIDTH);
+          splitTextMin(context,text, x, 500);
           break;
         case Verdict.PAUSE:
   /**        console.log('game is on pause!');    */
           text = 'Пауза в игре! Нажмите Space для продолжения игры.';
-          splitTextMin(context,text, x, WIDTH);
+          splitTextMin(context,text, x, 500);
           break;
         case Verdict.INTRO:
     /**      console.log('welcome to the game! Press Space to start');*/
           text = 'Добро пожаловать в игру! Вас ждут удивительные приключения с могущественным магом Пендальфом Синим, который может летать вверх, ходить налево и направо, стрелять файрболом и ваообще радоваться жизни. Нажмите Space для продолжения игры.';
-          splitTextMin(context,text, x, WIDTH);
+          splitTextMin(context,text, x, 500);
           break;
       }
     },
