@@ -355,11 +355,7 @@
       window.addEventListener('keydown', this._pauseListener);
 
       this._drawPauseScreen();
-
-      this._drawPauseScreen();
     },
-
-
 
     /**
      * Обработчик событий клавиатуры во время паузы.
@@ -382,24 +378,21 @@
      * Отрисовка экрана паузы.
      */
     _drawPauseScreen: function() {
-      var context = this.ctx;
+       var context = this.ctx;
       var text;
-      var x = 20;
-
-      /** Отрисовка поля канваса */
-      context.rect(20, 20, 500, 200);
+      var x = 325;
+      var y = 135;
+      context.rect(310, 120, 310, 150);
       context.fillStyle = '#FFFFFF';
-      context.fillRect = (20, 20, 500, 200);
-  /**       context.shadowColor = 'rgba(0, 0, 0, 0.7)';
+      context.fillRect = (310, 120, 310, 150);
+      context.shadowColor = 'rgba(0, 0, 0, 0.7)';
       context.shadowOffsetX = 10;
-      context.shadowOffsetY = 10;*/
+      context.shadowOffsetY = 10;
       context.fill();
-
-
       context.font ='16px PT Mono';
+      context.shadowColor = 'rgba(0, 0, 0, 0)';
       context.textBaseline ='hanging';
       context.fillStyle = 'black';
-
    /**Функция splitTextMin разбиения текста на подстроки.
    * Параметры:
    * context - объект канваса, определенный ранее.
@@ -409,8 +402,8 @@
    */
       function splitTextMin(context,text, x, maxWidth)
          {
-             var h= 24; // высота строк и отступ сверху.
-             var widthMin = maxWidth - 2*x; // ширина, которая должна быть у выводимых строк.
+             var h= 25; // высота строк и отступ сверху.
+             var widthMin = maxWidth - 2*15; // ширина, которая должна быть у выводимых строк.
              var lines = []; // массив, в который заносятся строки нужной ширины.
              var words = text.split(" "); // массив разбиения текста на слова.
              var countWords = words.length;
@@ -428,35 +421,33 @@
              }
              lines[lines.length] = line; // занесение последней строки из текста в массив lines.
 
-
          /** Вывод строк в поле канваса из массива lines.*/
              var len = lines.length;
              for (var i = 0; i < len; i++) {
-               context.fillText(lines[i], x, h+i*h);
+          /**     context.textAlign = 'center'; */
+               context.fillText(lines[i], x, y+i*h);
              }
          }
-
-
       switch (this.state.currentStatus) {
         case Verdict.WIN:
           text = 'Вы победили! Нажмите Space для продолжения игры.';
-          splitTextMin(context,text, x, 500);
+          splitTextMin(context,text, x, 310);
   /**         console.log('you have won!');*/
           break;
         case Verdict.FAIL:
   /**         console.log('you have failed!');*/
           text = 'Вы проиграли! Нажмите Space для продолжения игры.';
-          splitTextMin(context,text, x, 500);
+          splitTextMin(context,text, x, 310);
           break;
         case Verdict.PAUSE:
   /**        console.log('game is on pause!');    */
           text = 'Пауза в игре! Нажмите Space для продолжения игры.';
-          splitTextMin(context,text, x, 500);
+          splitTextMin(context,text, x, 310);
           break;
         case Verdict.INTRO:
     /**      console.log('welcome to the game! Press Space to start');*/
-          text = 'Добро пожаловать в игру! Вас ждут удивительные приключения с могущественным магом Пендальфом Синим, который может летать вверх, ходить налево и направо, стрелять файрболом и ваообще радоваться жизни. Нажмите Space для продолжения игры.';
-          splitTextMin(context,text, x, 500);
+          text = 'Вас ждут удивительные приключения с могущественным магом Пендальфом Синим. Нажмите Space для продолжения игры.';
+          splitTextMin(context,text, x, 310);
           break;
       }
     },
