@@ -355,7 +355,11 @@
       window.addEventListener('keydown', this._pauseListener);
 
       this._drawPauseScreen();
+
+      this._drawPauseScreen();
     },
+
+
 
     /**
      * Обработчик событий клавиатуры во время паузы.
@@ -378,77 +382,60 @@
      * Отрисовка экрана паузы.
      */
     _drawPauseScreen: function() {
-       var context = this.ctx;
-      var text;
-      var x = 325;
-      var y = 135;
-      context.rect(310, 120, 310, 150);
-      context.fillStyle = '#FFFFFF';
-      context.fillRect = (310, 120, 310, 150);
-      context.shadowColor = 'rgba(0, 0, 0, 0.7)';
-      context.shadowOffsetX = 10;
-      context.shadowOffsetY = 10;
-      context.fill();
-      context.font ='16px PT Mono';
-      context.shadowColor = 'rgba(0, 0, 0, 0)';
-      context.textBaseline ='hanging';
-      context.fillStyle = 'black';
-   /**Функция splitTextMin разбиения текста на подстроки.
-   * Параметры:
-   * context - объект канваса, определенный ранее.
-   * text- передаваемый текст.
-   * x- отступ в поле канваса слева и справа.
-   * maxWidth- ширина поля канваса вместе с отступами.
-   */
-      function splitTextMin(context,text, x, maxWidth)
-         {
-             var h= 25; // высота строк и отступ сверху.
-             var widthMin = maxWidth - 2*15; // ширина, которая должна быть у выводимых строк.
-             var lines = []; // массив, в который заносятся строки нужной ширины.
-             var words = text.split(" "); // массив разбиения текста на слова.
-             var countWords = words.length;
-             var line = '';  //переменная, в к-ю заносятся строки нужной ширины, которая затем добавляется к массиву lines.
-             for (var n = 0; n < countWords; n++) {
-                 var testLine = line + words[n] + " ";
-                 var testWidth = context.measureText(testLine).width;
-                 if (testWidth > widthMin) {
-                     lines[lines.length] = line; // занесение строки в массив lines.
-                     line = words[n] + ' '; // занесение в line последнего слова, которое не влезло в формируемую строку.
-                 }
-                 else {
-                     line = testLine; // если ширина формируемой строки меньше или равна нужной ширине.
-                 }
-             }
-             lines[lines.length] = line; // занесение последней строки из текста в массив lines.
 
-         /** Вывод строк в поле канваса из массива lines.*/
-             var len = lines.length;
-             for (var i = 0; i < len; i++) {
-          /**     context.textAlign = 'center'; */
-               context.fillText(lines[i], x, y+i*h);
-             }
-         }
+      var msgWidth = 350;
+      var msgHeight = 200;
+      var msgPadding = 20;
+
+      // Отрисовка поля канваса
+      this.ctx.fillStyle = 'rgba(0, 0, 0)';
+      this.ctx.fillRect(340, 60, msgWidth, msgHeight);
+
+      this.ctx.fillStyle = '#FFFFFF';
+      this.ctx.fillRect(330, 50, msgWidth, msgHeight);
+
+      this.ctx.font = '14px PT Mono';
+      this.ctx.textBaseline = 'hanging';
+      this.ctx.fillStyle = 'black';
+
       switch (this.state.currentStatus) {
         case Verdict.WIN:
-          text = 'Вы победили! Нажмите Space для продолжения игры.';
-          splitTextMin(context,text, x, 310);
-  /**         console.log('you have won!');*/
+          this.splitTextMin(this.ctx, 'Вы победили! Нажмите Space для продолжения игры.', msgPadding, msgWidth);
           break;
         case Verdict.FAIL:
-  /**         console.log('you have failed!');*/
-          text = 'Вы проиграли! Нажмите Space для продолжения игры.';
-          splitTextMin(context,text, x, 310);
+          this.splitTextMin(this.ctx, 'Вы проиграли! Нажмите Space для продолжения игры.', msgPadding, msgWidth);
           break;
         case Verdict.PAUSE:
-  /**        console.log('game is on pause!');    */
-          text = 'Пауза в игре! Нажмите Space для продолжения игры.';
-          splitTextMin(context,text, x, 310);
+          this.splitTextMin(this.ctx, 'Пауза в игре! Нажмите Space для продолжения игры.', msgPadding, msgWidth);
           break;
         case Verdict.INTRO:
-    /**      console.log('welcome to the game! Press Space to start');*/
-          text = 'Вас ждут удивительные приключения с могущественным магом Пендальфом Синим. Нажмите Space для продолжения игры.';
-          splitTextMin(context,text, x, 310);
+          this.splitTextMin(this.ctx, 'Добро пожаловать в игру! Вас ждут удивительные приключения с могущественным магом Пендальфом Синим, который может летать вверх, ходить налево и направо, стрелять файрболом и радоваться жизни. Нажмите Space для продолжения игры.', msgPadding, msgWidth);
           break;
+      }
+    },
+
+    splitTextMin: function(context, text, x, maxWidth) {
+      var h = 24; // высота строк и отступ сверху.
+      var widthMin = maxWidth - 2 * x; // ширина, которая должна быть у выводимых строк.
+      var lines = []; // массив, в который заносятся строки нужной ширины.
+      var words = text.split(' '); // массив разбиения текста на слова.
+      var countWords = words.length;
+      var line = '';  //переменная, в к-ю заносятся строки нужной ширины, которая затем добавляется к массиву lines.
+      for (var n = 0; n < countWords; n++) {
+        var testLine = line + words[n] + ' ';
+        var testWidth = context.measureText(testLine).width;
+        if (testWidth > widthMin) {
+          lines[lines.length] = line; // занесение строки в массив lines.
+          line = words[n] + ' '; // занесение в line последнего слова, которое не влезло в формируемую строку.
+        } else {
+          line = testLine; // если ширина формируемой строки меньше или равна нужной ширине.
+        }
+      }
+      lines[lines.length] = line; // занесение последней строки из текста в массив lines.
+
+      var len = lines.length;
+      for (var i = 0; i < len; i++) {
+        context.fillText(lines[i], 330 + x, 50 + h + i * h);
       }
     },
 
