@@ -1,7 +1,7 @@
 # Личный проект «Код и Магия» [![Build status][travis-image]][travis-url] [![Dependency status][dependency-image]][dependency-url]
 
 * Студент: [Ирина Мозес](https://up.htmlacademy.ru/javascript/5/user/208124).
-* Наставник: `Неизвестно`.
+* Наставник: `Евгений Лепёшкин.`
 
 ---
 
@@ -18,3 +18,4 @@ _`.editorconfig`, `.eslintignore`, `.eslintrc`, `.gitignore`, `.travis.yml`, `pa
 [travis-url]: https://travis-ci.org/htmlacademy-javascript/208124-code-and-magick
 [dependency-image]: https://david-dm.org/htmlacademy-javascript/208124-code-and-magick.svg?style=flat-square
 [dependency-url]: https://david-dm.org/htmlacademy-javascript/208124-code-and-magick
+
