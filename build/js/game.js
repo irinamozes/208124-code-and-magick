@@ -357,6 +357,8 @@
       this._drawPauseScreen();
     },
 
+
+
     /**
      * Обработчик событий клавиатуры во время паузы.
      * @param {KeyboardsEvent} evt
@@ -378,19 +380,60 @@
      * Отрисовка экрана паузы.
      */
     _drawPauseScreen: function() {
+
+      var msgWidth = 350;
+      var msgHeight = 200;
+      var msgPadding = 20;
+
+      // Отрисовка поля канваса
+      this.ctx.fillStyle = 'rgba(0, 0, 0)';
+      this.ctx.fillRect(340, 60, msgWidth, msgHeight);
+
+      this.ctx.fillStyle = '#FFFFFF';
+      this.ctx.fillRect(330, 50, msgWidth, msgHeight);
+
+      this.ctx.font = '14px PT Mono';
+      this.ctx.textBaseline = 'hanging';
+      this.ctx.fillStyle = 'black';
+
       switch (this.state.currentStatus) {
         case Verdict.WIN:
-          console.log('you have won!');
+          this.splitTextMin(this.ctx, 'Вы победили! Нажмите Space для продолжения игры.', msgPadding, msgWidth);
           break;
         case Verdict.FAIL:
-          console.log('you have failed!');
+          this.splitTextMin(this.ctx, 'Вы проиграли! Нажмите Space для продолжения игры.', msgPadding, msgWidth);
           break;
         case Verdict.PAUSE:
-          console.log('game is on pause!');
+          this.splitTextMin(this.ctx, 'Пауза в игре! Нажмите Space для продолжения игры.', msgPadding, msgWidth);
           break;
         case Verdict.INTRO:
-          console.log('welcome to the game! Press Space to start');
+          this.splitTextMin(this.ctx, 'Добро пожаловать в игру! Вас ждут удивительные приключения с могущественным магом Пендальфом Синим, который может летать вверх, ходить налево и направо, стрелять файрболом и радоваться жизни. Нажмите Space для продолжения игры.', msgPadding, msgWidth);
           break;
+      }
+    },
+
+    splitTextMin: function(context, text, x, maxWidth) {
+      var h = 24; // высота строк и отступ сверху.
+      var widthMin = maxWidth - 2 * x; // ширина, которая должна быть у выводимых строк.
+      var lines = []; // массив, в который заносятся строки нужной ширины.
+      var words = text.split(' '); // массив разбиения текста на слова.
+      var countWords = words.length;
+      var line = '';  //переменная, в к-ю заносятся строки нужной ширины, которая затем добавляется к массиву lines.
+      for (var n = 0; n < countWords; n++) {
+        var testLine = line + words[n] + ' ';
+        var testWidth = context.measureText(testLine).width;
+        if (testWidth > widthMin) {
+          lines[lines.length] = line; // занесение строки в массив lines.
+          line = words[n] + ' '; // занесение в line последнего слова, которое не влезло в формируемую строку.
+        } else {
+          line = testLine; // если ширина формируемой строки меньше или равна нужной ширине.
+        }
+      }
+      lines[lines.length] = line; // занесение последней строки из текста в массив lines.
+
+      var len = lines.length;
+      for (var i = 0; i < len; i++) {
+        context.fillText(lines[i], 330 + x, 50 + h + i * h);
       }
     },
 
