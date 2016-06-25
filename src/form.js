@@ -1,5 +1,7 @@
 'use strict';
 (function() {
+  var browserCookies = require('browser-cookies');
+  var reviewSubmit = document.querySelector('.review-submit');
   var formContainer = document.querySelector('.overlay-container');
   var formOpenButton = document.querySelector('.reviews-controls-new');
   var formCloseButton = document.querySelector('.review-form-close');
@@ -8,6 +10,13 @@
   var fieldName = document.querySelector('.review-form-field-name');
   var fieldText = document.querySelector('.review-form-field-text');
 
+  //  Вычисление даты ближайшего дня рождения в милисекундах
+  var today = new Date();
+  var myBirthday = new Date(today.getFullYear() + '-01' + '-20');
+  if ((myBirthday.valueOf()) >= Date.now()) {
+    myBirthday = new Date((today.getFullYear() - 1) + '-01' + '-20');
+  }
+  var expiresDate = ((Date.now() - myBirthday.valueOf())) / 1000 / 60 / 60 / 24;  // Срок жизни cookie
 
   formOpenButton.onclick = function(evt) {
     evt.preventDefault();
@@ -21,7 +30,6 @@
     var reviewText = document.querySelector('.review-fields-text');
     var reviewDiv = document.querySelector('.review-fields'); // элемент для всего блока ссылок
     reviewDiv.classList.remove('invisible');
-    var reviewSubmit = document.querySelector('.review-submit');
     var isDisabled = true;
     var isDisabledN = true;
     var isDisabledT = true;
@@ -74,7 +82,19 @@
     validform();
   };
 
+  fieldName.value = browserCookies.get('fieldName') || '';
+  var checkedValue = browserCookies.get('checkedLast') || 3;
+  voteElements[2].removeAttribute('checked');
+  voteElements[checkedValue - 1].setAttribute('checked', 'checked');
+
   validform();
+
+  reviewSubmit.onclick = function(evt) {
+    evt.preventDefault();
+    var checkedLast = document.querySelector('input[name="review-mark"]:checked');
+    browserCookies.set('checkedLast', checkedLast.value, {expires: expiresDate });
+    browserCookies.set('fieldName', fieldName.value, {expires: expiresDate });
+  };
 
   formCloseButton.onclick = function(evt) {
     evt.preventDefault();
