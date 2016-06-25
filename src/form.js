@@ -16,8 +16,7 @@
   if ((myBirthday.valueOf()) >= Date.now()) {
     myBirthday = new Date((today.getFullYear() - 1) + '-01' + '-20');
   }
-  // Вычисление срока жизни cookie в днях
-  var expiresDate = Math.round(((Date.now() - myBirthday.valueOf())) / 1000 / 60 / 60 / 24);
+  var expiresDate = Date.now() + (Date.now() - myBirthday.valueOf());  // Срок жизни cookie
 
   formOpenButton.onclick = function(evt) {
     evt.preventDefault();
@@ -89,12 +88,12 @@
   voteElements[checkedValue - 1].setAttribute('checked', 'checked');
 
   validform();
-  // Создание Cookies
-  reviewSubmit.onclick = function(evt) {
+
+  reviewSubmit.onsubmit = function(evt) {
     evt.preventDefault();
     var checkedLast = document.querySelector('input[name="review-mark"]:checked');
     browserCookies.set('checkedLast', checkedLast.value, {expires: expiresDate });
-    browserCookies.set('fieldName', fieldName.value, {expires: expiresDate });
+    browserCookies.set('fieldName', fieldName.value);
   };
 
   formCloseButton.onclick = function(evt) {
