@@ -1,6 +1,7 @@
 'use strict';
 (function() {
   var browserCookies = require('browser-cookies');
+//  var _form = document.querySelector('.overlay review-form');
   var reviewSubmit = document.querySelector('.review-submit');
   var formContainer = document.querySelector('.overlay-container');
   var formOpenButton = document.querySelector('.reviews-controls-new');
@@ -94,6 +95,7 @@
     var checkedLast = document.querySelector('input[name="review-mark"]:checked');
     browserCookies.set('checkedLast', checkedLast.value, {expires: expiresDate });
     browserCookies.set('fieldName', fieldName.value, {expires: expiresDate });
+  //  _form.submit();
   };
 
   formCloseButton.onclick = function(evt) {
