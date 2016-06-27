@@ -11,18 +11,26 @@
     elementToClone = templateElement.querySelector('.review');
   }
 
-  var getReviewElement = function(data, container) {
+  var IMAGE_LOAD_TIMEOUT = 10000;
 
+  var getReviewElement = function(data, container) {
     var element = elementToClone.cloneNode(true);
     var _picture = new Image();
-    _picture.onload = function() {
-      element.querySelector('.review-author').src = data.picture;
-      element.querySelector('.review-author').width = '124';
-      element.querySelector('.review-author').height = '124';
+    var _pictureTimeout;
+    _picture.onload = function(evt) {
+      clearTimeout(_pictureTimeout);
+      element.querySelector('.review-author').src = evt.target.src;
+      _picture.width = '124';
+      _picture.height = '124';
     };
     _picture.onerror = function() {
       element.classList.add('review-load-failure');
     };
+    _picture.src = data.author.picture;
+    _pictureTimeout = setTimeout(function() {
+      _picture.src = '';
+      element.classList.add('review-load-failure');
+    }, IMAGE_LOAD_TIMEOUT);
     element.querySelector('.review-text').textContent = data.description;
     container.appendChild(element);
     return element;
