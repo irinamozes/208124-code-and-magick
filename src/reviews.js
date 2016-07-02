@@ -15,7 +15,6 @@
 
   var IMAGE_LOAD_TIMEOUT = 10000;
   var REVIEWS_LOAD_URL = '//o0.github.io/assets/json/reviews.json';
-  //var REVIEWS_LOAD_URL = '//o.github.io/json/reviews.json';
 
   var Filter = {
     'ALL': 'reviews-all',
@@ -24,8 +23,6 @@
     'BAD': 'reviews-bad',
     'POPULAR': 'reviews-popular'
   };
-
-
 
   var getReviewElement = function(data, container) {
     var element = elementToClone.cloneNode(true);
@@ -83,14 +80,24 @@
         break;
 
       case Filter.RECENT:
+
+        var _date;
+        var _adate;
+        var _bdate;
         reviewsToFilter = reviewsToFilter.filter(
           function(rat) {
-            return (rat.date.valueOf() <= Date.now() && rat.date.valueOf() > Date.now() - 4 * 24 * 60 * 60 * 1000);
+            _date = new Date(rat.date);
+            return (_date.valueOf() <= Date.now() && _date.valueOf() > Date.now() - 20 * 24 * 60 * 60 * 1000);
           }
+
         );
+
         reviewsToFilter = reviewsToFilter.sort(function(a, b) {
-          return (a.date.valueOf() - b.date.valueOf());
+          _adate = new Date(a.date);
+          _bdate = new Date(b.date);
+          return (_bdate.valueOf() - _adate.valueOf());
         });
+
         break;
 
       case Filter.POPULAR:
@@ -99,14 +106,6 @@
         });
         break;
 
-    }
-
-  //  var _alert = function() {
-    //  alert( 'В данной категории отзывов ничего не найдено' );
-  //  };
-    if(reviewsToFilter.length === 0) {
-      reviewsContainer.innerHTML = '';
-    //  _alert();
     }
     return reviewsToFilter;
   };
@@ -148,7 +147,6 @@
     xhr.open('GET', REVIEWS_LOAD_URL);
     xhr.send();
   };
-
 
   var reviews = [];
   getReviews(function(loadedReviews) {
