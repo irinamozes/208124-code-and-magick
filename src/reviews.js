@@ -6,6 +6,9 @@
   reviewsSection.classList.add('reviews-list-loading');
   var templateElement = document.querySelector('template');
   var reviewsContainer = document.querySelector('.reviews-list');
+
+  var reviewsMore = document.querySelector('.reviews-controls-more');
+
   var elementToClone;
   if ('content' in templateElement) {
     elementToClone = templateElement.content.querySelector('.review');
@@ -15,6 +18,11 @@
 
   var IMAGE_LOAD_TIMEOUT = 10000;
   var REVIEWS_LOAD_URL = '//o0.github.io/assets/json/reviews.json';
+
+  var PAGE_SIZE = 3;
+  var pageNumber = 0;
+  var filteredReviews = [];
+  var filterPage;        // количество страниц для вывода отфильтрованного массива без округления
 
   var Filter = {
     'ALL': 'reviews-all',
@@ -47,9 +55,14 @@
     return element;
   };
 
-  var renderReviews = function(reviews) {
-    reviewsContainer.innerHTML = '';
-    reviews.forEach(function(review) {
+  var renderReviews = function(reviews, page, replace) {
+    if (replace) {
+      reviewsContainer.innerHTML = '';
+    }
+    var from = page * PAGE_SIZE;
+    var to = from + PAGE_SIZE;
+
+    reviews.slice(from, to).forEach(function(review) {
       getReviewElement(review, reviewsContainer);
     });
   };
@@ -105,23 +118,28 @@
           return (b.review_usefulness - a.review_usefulness);
         });
         break;
-
     }
     return reviewsToFilter;
   };
 
   var setFilterEnabled = function(filter) {
-    var filteredReviews = getFilteredReviews(reviews, filter);
-    renderReviews(filteredReviews);
+    filteredReviews = getFilteredReviews(reviews, filter);
+    filterPage = (filteredReviews.length / PAGE_SIZE);
+    pageNumber = 0;
+    if (filterPage > 1) {
+      reviewsMore.classList.remove('invisible');
+    } else {
+      reviewsMore.classList.add('invisible');
+    }
+    renderReviews(filteredReviews, pageNumber, true);
   };
 
-  var setFiltersEnabled = function(enabled) {
-    var filters = reviewsFilter.querySelectorAll('input[name="reviews"]');
-    for (var i = 0; i < filters.length; i++) {
-      filters[i].onclick = enabled ? function() {
-        setFilterEnabled(this.id);
-      } : null;
-    }
+  var setFiltersEnabled = function() {
+    reviewsFilter.addEventListener('click', function(evt) {
+      if (evt.target.name === 'reviews') {
+        setFilterEnabled(evt.target.id);
+      }
+    });
   };
 
   var getReviews = function(callback) {
@@ -148,11 +166,32 @@
     xhr.send();
   };
 
+
+  var isNextPageAvailable = function(reviews, page, pageSize) {
+    filterPage = (reviews.length / pageSize);
+    return page < Math.floor(reviews.length / pageSize);
+  };
+
+  var setScrollEnabled = function() {
+    reviewsMore.addEventListener('click', function() {
+      if (isNextPageAvailable(filteredReviews, pageNumber, PAGE_SIZE)) {
+        pageNumber++;
+        if (pageNumber + 1 < filterPage) {
+          reviewsMore.classList.remove('invisible');
+        } else {
+          reviewsMore.classList.add('invisible');
+        }
+        renderReviews(filteredReviews, pageNumber);
+      }
+    });
+  };
+
   var reviews = [];
   getReviews(function(loadedReviews) {
     reviews = loadedReviews;
     setFiltersEnabled(true);
     setFilterEnabled('reviews-all');
+    setScrollEnabled();
   });
 
   reviewsSection.classList.remove('reviews-list-loading');
