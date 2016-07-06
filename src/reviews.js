@@ -1,24 +1,27 @@
 'use strict';
 (function() {
+  var Review = require('./review');
+
+  var elemFilter;
+  var idReview = localStorage.getItem('f');
+  if (idReview !== 'undefined') {
+    elemFilter = document.getElementById(idReview);
+    elemFilter.setAttribute('checked', 'checked');
+  } else {
+    elemFilter = document.getElementById('reviews-all');
+    elemFilter.setAttribute('checked', 'checked');
+  }
+
   var reviewsSection = document.querySelector('.reviews');
   var reviewsFilter = document.querySelector('.reviews-filter');
   reviewsFilter.classList.add('invisible');
   reviewsSection.classList.add('reviews-list-loading');
-  var templateElement = document.querySelector('template');
   var reviewsContainer = document.querySelector('.reviews-list');
-
   var reviewsMore = document.querySelector('.reviews-controls-more');
 
-  var elementToClone;
-  if ('content' in templateElement) {
-    elementToClone = templateElement.content.querySelector('.review');
-  } else {
-    elementToClone = templateElement.querySelector('.review');
-  }
-
-  var IMAGE_LOAD_TIMEOUT = 10000;
   var REVIEWS_LOAD_URL = '//o0.github.io/assets/json/reviews.json';
 
+  var renderedReviews = [];
   var PAGE_SIZE = 3;
   var pageNumber = 0;
   var filteredReviews = [];
@@ -32,38 +35,19 @@
     'POPULAR': 'reviews-popular'
   };
 
-  var getReviewElement = function(data, container) {
-    var element = elementToClone.cloneNode(true);
-    var _picture = new Image();
-    var _pictureTimeout;
-    _picture.onload = function(evt) {
-      clearTimeout(_pictureTimeout);
-      element.querySelector('.review-author').src = evt.target.src;
-      _picture.width = '124';
-      _picture.height = '124';
-    };
-    _picture.onerror = function() {
-      element.classList.add('review-load-failure');
-    };
-    _picture.src = data.author.picture;
-    _pictureTimeout = setTimeout(function() {
-      _picture.src = '';
-      element.classList.add('review-load-failure');
-    }, IMAGE_LOAD_TIMEOUT);
-    element.querySelector('.review-text').textContent = data.description;
-    container.appendChild(element);
-    return element;
-  };
-
   var renderReviews = function(reviews, page, replace) {
     if (replace) {
-      reviewsContainer.innerHTML = '';
+      renderedReviews.forEach(function(review) {
+        review.remove();
+      });
+      renderedReviews = [];
     }
+
     var from = page * PAGE_SIZE;
     var to = from + PAGE_SIZE;
 
     reviews.slice(from, to).forEach(function(review) {
-      getReviewElement(review, reviewsContainer);
+      renderedReviews.push(new Review(review, reviewsContainer));
     });
   };
 
@@ -137,6 +121,9 @@
   var setFiltersEnabled = function() {
     reviewsFilter.addEventListener('click', function(evt) {
       if (evt.target.name === 'reviews') {
+        localStorage.clear();
+        var filterId = evt.target.id;
+        localStorage.setItem('f', filterId);
         setFilterEnabled(evt.target.id);
       }
     });
