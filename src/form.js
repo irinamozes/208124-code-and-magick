@@ -1,6 +1,7 @@
 'use strict';
 (function() {
   var browserCookies = require('browser-cookies');
+//  var utils = require('./utils');
   var reviewSubmit = document.querySelector('.review-submit');
   var formContainer = document.querySelector('.overlay-container');
   var formOpenButton = document.querySelector('.reviews-controls-new');
@@ -10,17 +11,21 @@
   var fieldName = document.querySelector('.review-form-field-name');
   var fieldText = document.querySelector('.review-form-field-text');
 
-  //  Вычисление даты ближайшего дня рождения в милисекундах
-  var today = new Date();
-  var myBirthday = new Date(today.getFullYear() + '-01' + '-20');
-  if ((myBirthday.valueOf()) >= Date.now()) {
-    myBirthday = new Date((today.getFullYear() - 1) + '-01' + '-20');
-  }
-  var expiresDate = ((Date.now() - myBirthday.valueOf())) / 1000 / 60 / 60 / 24;  // Срок жизни cookie
 
   formOpenButton.onclick = function(evt) {
     evt.preventDefault();
     formContainer.classList.remove('invisible');
+  };
+
+  //  Вычисление даты ближайшего дня рождения в милисекундах
+  var _expiresDate = function() {
+    var today = new Date();
+    var myBirthday = new Date(today.getFullYear() + '-01' + '-20');
+    if ((myBirthday.valueOf()) >= Date.now()) {
+      myBirthday = new Date((today.getFullYear() - 1) + '-01' + '-20');
+    }
+    var expiresDate = ((Date.now() - myBirthday.valueOf())) / 1000 / 60 / 60 / 24;  // Срок жизни cookie
+    return (expiresDate);
   };
 
   function validform() {
@@ -92,8 +97,8 @@
   reviewSubmit.onclick = function(evt) {
     evt.preventDefault();
     var checkedLast = document.querySelector('input[name="review-mark"]:checked');
-    browserCookies.set('checkedLast', checkedLast.value, {expires: expiresDate });
-    browserCookies.set('fieldName', fieldName.value, {expires: expiresDate });
+    browserCookies.set('checkedLast', checkedLast.value, {expires: _expiresDate() });
+    browserCookies.set('fieldName', fieldName.value, {expires: _expiresDate() });
   };
 
   formCloseButton.onclick = function(evt) {
